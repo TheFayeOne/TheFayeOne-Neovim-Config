@@ -181,6 +181,8 @@ do
 	--  See `:help hlsearch`
 	vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>")
 
+  vim.g.python3_host_prog = '/usr/bin/python3'
+
 	-- Diagnostic Config & Keymaps
 	--  See `:help vim.diagnostic.Opts`
 	vim.diagnostic.config({
@@ -722,7 +724,6 @@ do
 	local servers = {
 		-- clangd = {},
 		-- gopls = {},
-		 pyright = {},
 		-- rust_analyzer = {},
 		--
 		-- Some languages (like typescript) have entire language plugins that can be useful:
@@ -732,7 +733,22 @@ do
 		-- ts_ls = {},
 
 		stylua = {}, -- Used to format Lua code
-
+    pylsp = {
+            settings = {
+              pylsp = {
+                plugins = {
+                  pyflakes = { enabled = true },
+                  pycodestyle = { enabled = false },
+                  autopep8 = { enabled = false },
+                  yapf = { enabled = false },
+                  mccabe = { enabled = true },
+                  pylsp_mypy = { enabled = false },
+                  pylsp_black = { enabled = false },
+                  pylsp_isort = { enabled = false },
+                },
+              },
+            },
+          },
 		-- Special Lua Config, as recommended by neovim help docs
 		lua_ls = {
 			on_init = function(client)
@@ -793,8 +809,9 @@ do
 	local ensure_installed = vim.tbl_keys(servers or {})
 	vim.list_extend(ensure_installed, {
 		-- You can add other tools here that you want Mason to install
-    'pyright',
     'clangd',
+    'pylsp',
+    'bash-language-server',
 	})
 
 	require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
